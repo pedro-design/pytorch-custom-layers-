@@ -42,20 +42,3 @@ class retina_module(nn.Module):
         x = torch.cat(start,axis=0)
         x=  self.depth_conv (x)
         return x
-            features_retina = []
-            step_IND = 0
-            for step in image.split(1,dim=1):
-                step = step.squeeze()
-                state_H1,state_C1= self.lstm_0(step,(state_H1,state_C1 ))
-                state_H2,state_C2= self.lstm_1(state_H1,(state_H2,state_C2 ))
-                state_C2 = self.position_predictor(state_H2)
-                out_ =state_C2.argmax(axis=0)
-                features_retina.append(padded[index,step_IND, out_[1] : out_[1]+self.size, out_[ 0] : out_[ 0]+self.size].unsqueeze(0).unsqueeze(0))
-                step_IND = step_IND+1
-            out=  torch.cat(features_retina,dim=0)
-            index = index+1
-            start.append(out)
-
-        x = torch.cat(start,axis=0)
-        x=  self.depth_conv (x)
-        return x
